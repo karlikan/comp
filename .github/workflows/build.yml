@@ -1,0 +1,31 @@
+name: Build VST3 for Windows 10 x64
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+  workflow_dispatch:
+
+jobs:
+  build-windows:
+    runs-on: windows-2022
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Set up MSVC environment
+- name: Configure CMake
+cmake -B build -G "Visual Studio 17 2022" -A x64
+          -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build VST3 Plugin
+        run: cmake --build build --config Release --target Retrica_VST3
+
+      - name: Upload VST3 Binary Artifact
+        uses: actions/upload-artifact@v4
+        with:
+path: build/Retrica_artefacts/Release/VST3/Retrica.vst3
